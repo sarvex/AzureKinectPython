@@ -21,14 +21,14 @@ def VERIFY(result, error):
         sys.exit(1)
 
 def print_body_information(body):
-    print("Body ID: {}".format(body.id))
+    print(f"Body ID: {body.id}")
     for i in range(k4a.K4ABT_JOINT_COUNT):
         position = body.skeleton.joints[i].position
         orientation = body.skeleton.joints[i].orientation
         confidence_level = body.skeleton.joints[i].confidence_level
-        print("Joint[{}]: Position[mm] ( {}, {}, {} ); Orientation ( {}, {}, {}, {}); Confidence Level ({})".format(
-            i, position.v[0], position.v[1], position.v[2], orientation.v[0], orientation.v[1], orientation.v[2], orientation.v[3], confidence_level
-        ))
+        print(
+            f"Joint[{i}]: Position[mm] ( {position.v[0]}, {position.v[1]}, {position.v[2]} ); Orientation ( {orientation.v[0]}, {orientation.v[1]}, {orientation.v[2]}, {orientation.v[3]}); Confidence Level ({confidence_level})"
+        )
 
 def print_body_index_map_middle_line(body_index_map):
     print("print_body_index_map_middle_line not implemented")
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     sensor_calibration = k4a.k4a_calibration_t()
     VERIFY(k4a.k4a_device_get_calibration(device, device_config.depth_mode, k4a.K4A_COLOR_RESOLUTION_OFF, ctypes.byref(sensor_calibration)), "Get depth camera calibration failed!")
-    
+
     tracker = k4a.k4abt_tracker_t()
     tracker_config = k4a.K4ABT_TRACKER_CONFIG_DEFAULT
     VERIFY(k4a.k4abt_tracker_create(ctypes.byref(sensor_calibration), tracker_config, ctypes.byref(tracker)), "Body tracker initialization failed!")
@@ -76,7 +76,7 @@ if __name__ == "__main__":
         if get_capture_result == k4a.K4A_WAIT_RESULT_SUCCEEDED:
             frame_count += 1
 
-            print("Start processing frame {}".format(frame_count))
+            print(f"Start processing frame {frame_count}")
 
             queue_capture_result = k4a.k4abt_tracker_enqueue_capture(tracker, sensor_capture, k4a.K4A_WAIT_INFINITE)
 
@@ -94,7 +94,7 @@ if __name__ == "__main__":
             pop_frame_result = k4a.k4abt_tracker_pop_result(tracker, ctypes.byref(body_frame), k4a.K4A_WAIT_INFINITE)
             if pop_frame_result == k4a.K4A_WAIT_RESULT_SUCCEEDED:
                 num_bodies = k4a.k4abt_frame_get_num_bodies(body_frame)
-                print("{} bodies are detected!".format(num_bodies))
+                print(f"{num_bodies} bodies are detected!")
 
                 for i in range(num_bodies):
                     body = k4a.k4abt_body_t()
@@ -102,9 +102,10 @@ if __name__ == "__main__":
                     body.id = k4a.k4abt_frame_get_body_id(body_frame, i)
 
                     print_body_information(body)
-                
-                body_index_map = k4a.k4abt_frame_get_body_index_map(body_frame)
-                if body_index_map:
+
+                if body_index_map := k4a.k4abt_frame_get_body_index_map(
+                    body_frame
+                ):
                     print_body_index_map_middle_line(body_index_map)
                     k4a.k4a_image_release(body_index_map)
                 else:
@@ -123,7 +124,7 @@ if __name__ == "__main__":
             print("Error! Get depth frame time out!")
             break
         else:
-            print("Get depth capture returned error: {}".format(get_capture_result))
+            print(f"Get depth capture returned error: {get_capture_result}")
 
     print("Finished body tracking processing!")
 

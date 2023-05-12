@@ -6,14 +6,14 @@ import os
 from .pyk4a import k4a_float3_t, k4a_calibration_t, k4a_capture_t, k4a_image_t
 
 try:
-    dirPath = os.path.dirname(os.path.abspath(__file__))+r'/../vendor/azure_kinect/windows/amd64/'
-    _k4abt = ctypes.CDLL(dirPath+r'k4abt.dll')
-    os.environ['PATH'] = dirPath+';'+os.environ['PATH']
+    dirPath = f'{os.path.dirname(os.path.abspath(__file__))}/../vendor/azure_kinect/windows/amd64/'
+    _k4abt = ctypes.CDLL(f'{dirPath}k4abt.dll')
+    os.environ['PATH'] = f'{dirPath};' + os.environ['PATH']
 except Exception as e1:
     try:
         dirPath = r'C:/Program Files/Azure Kinect Body Tracking SDK/tools/'
-        _k4abt = ctypes.CDLL(dirPath+r'k4abt.dll')
-        os.environ['PATH'] = dirPath+';'+os.environ['PATH']
+        _k4abt = ctypes.CDLL(f'{dirPath}k4abt.dll')
+        os.environ['PATH'] = f'{dirPath};' + os.environ['PATH']
     except Exception as e2:
         try:
             _k4abt = ctypes.CDLL('k4abt.so')
@@ -21,14 +21,12 @@ except Exception as e1:
             print("Failed to load library", e1, e2, e3)
             sys.exit(1)
 
-# K4A_DECLARE_HANDLE(k4abt_tracker_t);
 class _handle_k4abt_tracker_t(ctypes.Structure):
      _fields_= [
         ("_rsvd", ctypes.c_size_t),
     ]
 k4abt_tracker_t = ctypes.POINTER(_handle_k4abt_tracker_t)
 
-# K4A_DECLARE_HANDLE(k4abt_frame_t);
 class _handle_k4abt_frame_t(ctypes.Structure):
      _fields_= [
         ("_rsvd", ctypes.c_size_t),

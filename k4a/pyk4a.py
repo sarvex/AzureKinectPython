@@ -4,15 +4,15 @@ import sys
 import os
 
 try:
-    dirPath = os.path.dirname(os.path.abspath(__file__))+r'/../vendor/azure_kinect/windows/amd64/'
+    dirPath = f'{os.path.dirname(os.path.abspath(__file__))}/../vendor/azure_kinect/windows/amd64/'
     print(dirPath)
-    _k4a = ctypes.CDLL(dirPath+r'k4a.dll')
-    os.environ['PATH'] = dirPath+';'+os.environ['PATH']
+    _k4a = ctypes.CDLL(f'{dirPath}k4a.dll')
+    os.environ['PATH'] = f'{dirPath};' + os.environ['PATH']
 except Exception as e1:
     try:
         dirPath = r'C:/Program Files/Azure Kinect SDK v1.4.1/sdk/windows-desktop/amd64/release/bin/'
-        _k4a = ctypes.CDLL(dirPath+r'k4a.dll')
-        os.environ['PATH'] = dirPath+';'+os.environ['PATH']
+        _k4a = ctypes.CDLL(f'{dirPath}k4a.dll')
+        os.environ['PATH'] = f'{dirPath};' + os.environ['PATH']
     except Exception as e2:
         try:
             _k4a = ctypes.CDLL('k4a.so')
@@ -20,28 +20,24 @@ except Exception as e1:
             print("Failed to load library", e1, e2, e3)
             sys.exit(1)
 
-# K4A_DECLARE_HANDLE(k4a_device_t);
 class _handle_k4a_device_t(ctypes.Structure):
      _fields_= [
         ("_rsvd", ctypes.c_size_t),
     ]
 k4a_device_t = ctypes.POINTER(_handle_k4a_device_t)
 
-# K4A_DECLARE_HANDLE(k4a_capture_t);
 class _handle_k4a_capture_t(ctypes.Structure):
      _fields_= [
         ("_rsvd", ctypes.c_size_t),
     ]
 k4a_capture_t = ctypes.POINTER(_handle_k4a_capture_t)
 
-# K4A_DECLARE_HANDLE(k4a_image_t);
 class _handle_k4a_image_t(ctypes.Structure):
      _fields_= [
         ("_rsvd", ctypes.c_size_t),
     ]
 k4a_image_t = ctypes.POINTER(_handle_k4a_image_t)
 
-# K4A_DECLARE_HANDLE(k4a_transformation_t);
 class _handle_k4a_transformation_t(ctypes.Structure):
      _fields_= [
         ("_rsvd", ctypes.c_size_t),
@@ -123,7 +119,7 @@ K4A_COLOR_CONTROL_POWERLINE_FREQUENCY = 9
 K4A_COLOR_CONTROL_MODE_AUTO = 0
 K4A_COLOR_CONTROL_MODE_MANUAL = 1
 
-    
+
 #class k4a_wired_sync_mode_t(CtypeIntEnum):
 K4A_WIRED_SYNC_MODE_STANDALONE = 0
 K4A_WIRED_SYNC_MODE_MASTER = 1
